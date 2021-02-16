@@ -32,8 +32,14 @@
     <input type="submit" value="Изменить">
     </form> 
     <?php
-      if (!isset($success)) $success = '';
-      echo "<p align='center'><font color='blue'>{$success}</font></p>";
+      if (!isset($success))
+      {
+        $success = '';
+      }
+      else
+      {
+        echo "<script>alert(\"".$success."\"); </script>";
+      }
     ?>
     <button><a href="{{ route('users') }}" style="text-decoration: none;">Назад</a></button>
   </main>
