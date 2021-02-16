@@ -8,7 +8,8 @@
 <body>
   <main style="display: flex; flex-direction: row;">  
     <div class="form" style="display: flex; flex-direction: column; width:30%;">
-      <form action="asset/create_user.php" method="post" style="display: flex; flex-direction: column;">
+      <form action="{{ route('create_user') }}" method="post" style="display: flex; flex-direction: column;">
+          @csrf
           <h4 style="margin-bottom: 1rem;">Создать пользователя</h4>
           <input type="text" name="surname" placeholder="Фамилия" style="margin-bottom: 1rem;">
           <input type="text" name="first_name" placeholder="Имя" style="margin-bottom: 1rem;">
@@ -24,6 +25,12 @@
           <input type="text" name="password_2" placeholder="Подтвердите пароль" style="margin-bottom: 1rem;">
           <input type="submit" value="Создать">
         </form>
+        <?php
+          if (isset($_GET['create_success']))
+          {
+            echo "<tr><th><font color='blue'>{$_GET['create_success']}</font></th></tr>";
+          }
+        ?>
     </div>  
     <table class="table">     
       <thead>
@@ -39,6 +46,12 @@
           <th scope="col"></th>
           <th scope="col"></th>
         </tr>
+        <?php
+          if (isset($_GET['delete_success']))
+          {
+            echo "<tr><th><font color='red'>{$_GET['delete_success']}</font></th></tr>";
+          }
+        ?>
       </thead>
       <tbody>
         @foreach($users as $element)
@@ -52,7 +65,7 @@
           <td>{{ $element->email}}</td>
           <td>{{ $element->password}}</td>
           <td><a href="/admin/users/{{ $element->id }}/update">Редактировать</a></td>
-          <td><a href="/admin/users/delete/{{ $element->id }}/delete">Удалить</a></td>
+          <td><a href="/admin/users/{{ $element->id }}/delete">Удалить</a></td>
         </tr>
         @endforeach
       </tbody>
