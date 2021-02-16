@@ -22,14 +22,15 @@ class AdminController extends Controller
         );
     }
 
-    public function users()
+    public function users($field='id', $order='ASC')
     {
+        $users = user::orderBy($field, $order)->get();
         return view(
             'users',
             [
-                'users' => user::all()
+                'users' => $users
             ]
             );
-    }
+    } 
 
 }

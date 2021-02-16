@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\user;
 use App\Models\edu_institution;
 
@@ -13,7 +14,7 @@ class UserController extends Controller
         return view(
             'update_user',
             [
-                'data'=> user::all()->where('id', $id)
+                'data' => user::all()->where('id', $id)
             ]
         );
     }
@@ -26,7 +27,7 @@ class UserController extends Controller
                 'users' => user::all(),
                 'delete_success' => "Пользователь ID {$id} удален"
             ]
-            );
+        );
     }
 
     public function create(Request $req)
@@ -41,49 +42,41 @@ class UserController extends Controller
         $req->input('edu_institution') ? $user->edu_institution = $req->input('edu_institution') : $flag = false;
         $req->input('email') ? $user->email = $req->input('email') : $flag = false;
         $create_success = "Пользователь не создан, только поле Отчество может быть пустым!";
-        if ($req->input('password_1') == $req->input('password_2') && $req->input('password_1'))
-        {
+        if ($req->input('password_1') == $req->input('password_2') && $req->input('password_1')) {
             $user->password = $req->input('password_1');
-        }
-        else
-        {
+        } else {
             $flag = false;
             $create_success = "Пользователь не создан, пароли не совпадают либо пусты";
         }
-        if (!stristr(serialize($edu_institutions::select('name')->get()),$req->input('edu_institution')))
-        {
+        if (!stristr(serialize($edu_institutions::select('name')->get()), $req->input('edu_institution'))) {
             $flag = false;
             $create_success = "Пользователь не создан. Учреждения образования не существует";
         }
-        if (stristr(serialize($user::select('email')->get()),$req->input('email')))
-        {
+        if (stristr(serialize($user::select('email')->get()), $req->input('email'))) {
             $flag = false;
             $create_success = "Пользователь не создан. Данный адрес электронной почты уже существует";
         }
-        if ($flag)
-        {
+        if ($flag) {
             $user->save();
             return redirect()->route(
                 'users',
                 [
                     'create_success' => 'Пользователь создан'
                 ]
-                );
-        }
-        else
-        {
+            );
+        } else {
             return redirect()->route(
                 'users',
                 [
                     'create_success' => $create_success
                 ]
-                );
+            );
         }
     }
 
     public function submit($id, Request $req)
     {
-        $user = user::find($id);        
+        $user = user::find($id);
         $user->id = $id;
         $flag = true;
         $req->input('surname') ? $user->surname = $req->input('surname') : $flag = false;
@@ -93,8 +86,7 @@ class UserController extends Controller
         $req->input('edu_institution') ? $user->edu_institution = $req->input('edu_institution') : $flag = false;
         $req->input('email') ? $user->email = $req->input('email') : $flag = false;
         $req->input('password') ? $user->password = $req->input('password') : $flag = false;
-        if ($flag)
-        {
+        if ($flag) {
             $user->save();
             #return redirect()->route('update_user', $id)->with('success', "Пользоватль обновлен");
             return view(
@@ -104,10 +96,8 @@ class UserController extends Controller
                     'data' => $user,
                     'success' => 'Пользователь обновлен'
                 ]
-                );
-        }
-        else
-        {
+            );
+        } else {
             return view(
                 'update_user',
                 [
@@ -115,7 +105,25 @@ class UserController extends Controller
                     'data' => $user,
                     'success' => 'Пользователь не обновлен, только поле Отчество может быть пустым!'
                 ]
-                );
+            );
         }
+    }
+
+    public function sort(Request $req)
+    {
+        /* return redirect()->route(
+            'users',
+            [
+                'users' => user::orderBy($req->input('field'), $req->input('order'))->get()
+            ]
+        ); */
+        return view(
+            'users',
+            [
+                'field' => $req->input('field'),
+                'order' => $req->input('order'),
+                'users' => user::orderBy($req->input('field'), $req->input('order'))->get()
+            ]
+            );
     }
 }

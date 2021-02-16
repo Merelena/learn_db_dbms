@@ -20,3 +20,6 @@ Route::post('/admin/users/create', 'UserController@create')->name('create_user')
 
 Route::get('/admin/users/{id}/delete', 'UserController@delete');
 
+Route::post('/admin/users/sort', 'UserController@sort')->name('sort_users');
+
+
