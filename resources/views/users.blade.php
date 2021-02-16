@@ -8,7 +8,7 @@
 <body>
   <main style="display: flex; flex-direction: row;">  
     <div class="form" style="display: flex; flex-direction: column; width:30%;">
-      <form action="create.php" method="post" style="display: flex; flex-direction: column;">
+      <form action="asset/create_user.php" method="post" style="display: flex; flex-direction: column;">
           <h4 style="margin-bottom: 1rem;">Создать пользователя</h4>
           <input type="text" name="surname" placeholder="Фамилия" style="margin-bottom: 1rem;">
           <input type="text" name="first_name" placeholder="Имя" style="margin-bottom: 1rem;">

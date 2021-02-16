@@ -32,8 +32,4 @@ class AdminController extends Controller
             );
     }
 
-    public function create_user()
-    {
-        return 'create user';
-    }
 }
