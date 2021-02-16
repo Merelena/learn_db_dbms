@@ -111,18 +111,24 @@ class UserController extends Controller
 
     public function sort(Request $req)
     {
-        /* return redirect()->route(
-            'users',
-            [
-                'users' => user::orderBy($req->input('field'), $req->input('order'))->get()
-            ]
-        ); */
         return view(
             'users',
             [
                 'field' => $req->input('field'),
                 'order' => $req->input('order'),
                 'users' => user::orderBy($req->input('field'), $req->input('order'))->get()
+            ]
+            );
+    }
+
+    public function search(Request $req)
+    {
+        return view(
+            'users',
+            [
+                'field' => $req->input('field'),
+                'search_term' => $req->input('search_term'),
+                'users' => user::where($req->input('field'), 'LIKE', $req->input('search_term'))->get()
             ]
             );
     }

@@ -22,4 +22,7 @@ Route::get('/admin/users/{id}/delete', 'UserController@delete');
 
 Route::post('/admin/users/sort', 'UserController@sort')->name('sort_users');
 
+Route::post('/admin/users/search', 'UserController@search')->name('search_users');
+
+
 
