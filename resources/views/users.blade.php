@@ -26,7 +26,7 @@
           <option value="role">Роль</option>
           <option value="edu_institution">УО</option>
           <option value="email">E-mail</option>
-          <option value="created_at">Дата создания</option>
+          <option value="created_at">Дата добавления</option>
           <option value="updated_at">Дата обновления</option>
         </select>
         <select name="order">
@@ -47,13 +47,13 @@
           <option value="edu_institution">УО</option>
           <option value="email">E-mail</option>
           <option value="password">Пароль</option>
-          <option value="created_at">Дата создания</option>
+          <option value="created_at">Дата добавления</option>
         </select>
         <input type='submit' value='Поиск'>
       </form>
       <form action="{{ route('create_user') }}" method="post" style="display: flex; flex-direction: column;">
         @csrf
-        <h4 style="margin-bottom: 1rem; margin-top: 1rem;">Создать пользователя</h4>
+        <h4 style="margin-bottom: 1rem; margin-top: 1rem;">Добавить пользователя</h4>
         <input type="text" name="surname" placeholder="Фамилия" style="margin-bottom: 1rem;">
         <input type="text" name="first_name" placeholder="Имя" style="margin-bottom: 1rem;">
         <input type="text" name="middle_name" placeholder="Отчество" style="margin-bottom: 1rem;">
@@ -66,15 +66,16 @@
         <input type="text" name="email" placeholder="E-mail" style="margin-bottom: 1rem;">
         <input type="text" name="password_1" placeholder="Пароль" style="margin-bottom: 1rem;">
         <input type="text" name="password_2" placeholder="Подтвердите пароль" style="margin-bottom: 1rem;">
-        <input type="submit" value="Создать">
+        <input type="submit" value="Добавить">
       </form>
       <?php
         if (isset($_GET['create_success'])) {
           echo "<script>alert(\"".$_GET['create_success']."\"); </script>";
         }
       ?>
+      <a href="{{ route('admin') }}"><button>Назад</button></a>
     </div>
-    <table class="table" style="display: flex; flex-direction: column;">        
+    <table class="table">        
       <caption>{!! $users->render() !!}</caption>
       <thead>
         <?php
@@ -91,8 +92,8 @@
           <th scope="col">Учреждение образования</th>
           <th scope="col">E-mail</th>
           <th scope="col">Пароль</th>
-          <th scope="col">Создан</th>
-          <th scope="col">Обновлен</th>
+          <th scope="col">Дата добавления</th>
+          <th scope="col">Дата обновления</th>
           <th scope="col"></th>
           <th scope="col"></th>
         </tr>

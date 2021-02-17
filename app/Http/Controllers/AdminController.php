@@ -22,10 +22,16 @@ class AdminController extends Controller
         );
     }
 
-    public function users($field='id', $order='ASC')
+    public function users($field='updated_at', $order='ASC')
     {
         $users = user::orderBy($field, $order)->simplePaginate(20);
         return view('users')->with('users', $users);
+    } 
+
+    public function edu_institutions($field='updated_at', $order='ASC')
+    {
+        $edu_institutions = edu_institution::orderBy($field, $order)->simplePaginate(20);
+        return view('edu_institutions')->with('edu_institutions', $edu_institutions);
     } 
 
 }

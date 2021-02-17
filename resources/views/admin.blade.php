@@ -9,8 +9,7 @@
   <main>
     <table class="table">
         <h4 align="top" style="display: inline; margin-right: 2rem;">Учебные заведения</h4>
-        <input type="submit" value="Перейти" style="margin-right: 2rem;">
-        <input type="submit" value="Очистить">
+        <a href="{{ route('edu_institutions') }}"><input type="submit" value="Перейти" style="margin-right: 2rem;"></a>
       <thead>
         <tr>
           <th scope="col">Название</th>
@@ -29,7 +28,6 @@
     <table class="table">
       <h4 align="top" style="display: inline; margin-right: 2rem;">Пользователи</h4>
       <a href="{{ route('users') }}"><input type="submit" value="Перейти" style="margin-right: 2rem;"></a>
-      <input type="submit" value="Очистить">
       <thead>
         <tr>
           <th scope="col">ID</th>
@@ -52,7 +50,6 @@
     <table class="table">    
       <h4 align="top" style="display: inline; margin-right: 2rem;">Учебные пособия</h4>
       <input type="submit" value="Перейти" style="margin-right: 2rem;">
-      <input type="submit" value="Очистить">
       <thead>
         <tr>
           <th scope="col">ID</th>

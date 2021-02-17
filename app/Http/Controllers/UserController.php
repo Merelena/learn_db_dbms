@@ -41,27 +41,27 @@ class UserController extends Controller
         $req->input('role') ? $user->role = $req->input('role') : $flag = false;
         $req->input('edu_institution') ? $user->edu_institution = $req->input('edu_institution') : $flag = false;
         $req->input('email') ? $user->email = $req->input('email') : $flag = false;
-        $create_success = "Пользователь не создан, только поле Отчество может быть пустым!";
+        $create_success = "Пользователь не добавлен, только поле Отчество может быть пустым!";
         if ($req->input('password_1') == $req->input('password_2') && $req->input('password_1')) {
             $user->password = $req->input('password_1');
         } else {
             $flag = false;
-            $create_success = "Пользователь не создан, пароли не совпадают либо пусты";
+            $create_success = "Пользователь не добавлен, пароли не совпадают либо пусты";
         }
         if (!stristr(serialize($edu_institutions::select('name')->get()), $req->input('edu_institution'))) {
             $flag = false;
-            $create_success = "Пользователь не создан. Учреждения образования не существует";
+            $create_success = "Пользователь не добавлен. Учреждения образования не существует";
         }
         if (stristr(serialize($user::select('email')->get()), $req->input('email'))) {
             $flag = false;
-            $create_success = "Пользователь не создан. Данный адрес электронной почты уже существует";
+            $create_success = "Пользователь не добавлен. Данный адрес электронной почты уже существует";
         }
         if ($flag) {
             $user->save();
             return redirect()->route(
                 'users',
                 [
-                    'create_success' => 'Пользователь создан'
+                    'create_success' => 'Пользователь добавлен'
                 ]
             );
         } else {
@@ -116,7 +116,7 @@ class UserController extends Controller
             [
                 'field' => $req->input('field'),
                 'order' => $req->input('order'),
-                'users' => user::orderBy($req->input('field'), $req->input('order'))->get()
+                'users' => user::orderBy($req->input('field'), $req->input('order'))->paginate(20)
             ]
             );
     }
@@ -128,7 +128,7 @@ class UserController extends Controller
             [
                 'field' => $req->input('field'),
                 'search_term' => $req->input('search_term'),
-                'users' => user::where($req->input('field'), 'LIKE', $req->input('search_term'))->get()
+                'users' => user::where($req->input('field'), 'LIKE', $req->input('search_term'))->paginate(20)
             ]
             );
     }
