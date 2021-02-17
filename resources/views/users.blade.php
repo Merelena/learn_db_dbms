@@ -74,7 +74,8 @@
         }
       ?>
     </div>
-    <table class="table">
+    <table class="table" style="display: flex; flex-direction: column;">        
+      <caption>{!! $users->render() !!}</caption>
       <thead>
         <?php
         if (isset($_GET['delete_success'])) {
@@ -113,11 +114,9 @@
           <td><a href="javascript:del({{ $element->id }})">Удалить</a></td>
         </tr>
         @endforeach
-      </tbody>
-    </table>
-    
-  </main>
-  
+      </tbody>              
+      <caption>{!! $users->render() !!}</caption>
+    </table>    
+  </main>  
 </body>
-
 </html>

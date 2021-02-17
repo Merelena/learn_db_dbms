@@ -24,13 +24,8 @@ class AdminController extends Controller
 
     public function users($field='id', $order='ASC')
     {
-        $users = user::orderBy($field, $order)->get();
-        return view(
-            'users',
-            [
-                'users' => $users
-            ]
-            );
+        $users = user::orderBy($field, $order)->simplePaginate(20);
+        return view('users')->with('users', $users);
     } 
 
 }
