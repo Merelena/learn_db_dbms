@@ -48,6 +48,7 @@
           <option value="email">E-mail</option>
           <option value="password">Пароль</option>
           <option value="created_at">Дата добавления</option>
+          <option value="updated_at">Дата обновления</option>
         </select>
         <input type='submit' value='Поиск'>
       </form>

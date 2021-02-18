@@ -111,7 +111,7 @@ class EduInstitutionController extends Controller
             [
                 'field' => $req->input('field'),
                 'search_term' => $req->input('search_term'),
-                'edu_institutions' => edu_institution::where($req->input('field'), 'LIKE', $req->input('search_term'))->paginate(20)
+                'edu_institutions' => edu_institution::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->paginate(20)
             ]
         );
     }

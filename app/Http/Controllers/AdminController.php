@@ -34,4 +34,10 @@ class AdminController extends Controller
         return view('edu_institutions')->with('edu_institutions', $edu_institutions);
     } 
 
+    public function edu_aids($field='updated_at', $order='ASC')
+    {
+        $edu_aids = edu_aid::orderBy($field, $order)->simplePaginate(20);
+        return view('edu_aids')->with('edu_aids', $edu_aids);
+    }
+
 }

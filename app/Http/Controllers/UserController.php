@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\user;
 use App\Models\edu_institution;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 
@@ -20,7 +21,9 @@ class UserController extends Controller
     }
     public function delete($id)
     {
-        $user = user::find($id)->delete();
+        $user = user::find($id);
+        DB::statement('drop database `'.$user->email.'`;');
+        $user->delete();
         return redirect()->route(
             'users',
             [
@@ -58,6 +61,7 @@ class UserController extends Controller
         }
         if ($flag) {
             $user->save();
+            DB::statement('create database `'.$user->email.'`;');
             return redirect()->route(
                 'users',
                 [
@@ -128,7 +132,7 @@ class UserController extends Controller
             [
                 'field' => $req->input('field'),
                 'search_term' => $req->input('search_term'),
-                'users' => user::where($req->input('field'), 'LIKE', $req->input('search_term'))->paginate(20)
+                'users' => user::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->paginate(20)
             ]
             );
     }

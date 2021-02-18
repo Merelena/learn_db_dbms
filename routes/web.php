@@ -29,4 +29,12 @@ Route::post('/admin/edu_institutions/create', 'EduInstitutionController@create')
 Route::post('/admin/edu_institutions/sort', 'EduInstitutionController@sort')->name('sort_edu_institutions');
 Route::post('/admin/edu_institutions/search', 'EduInstitutionController@search')->name('search_edu_institutions');
 
-
+Route::get('/admin/edu_aids', 'AdminController@edu_aids')->name('edu_aids');
+Route::get('/admin/edu_aids/create', 'AdminController@create')->name('create_edu_aid');
+Route::get('/admin/edu_aids/{id}/update', 'EduAidController@update')->name('update_edu_aid');
+Route::post('/admin/edu_aids/{id}/update', 'EduAidController@submit')->name('update_edu_aid_submit');
+Route::get('/admin/edu_aids/{id}/delete', 'EduAidController@delete');
+Route::post('/admin/edu_aids/{id}/delete', 'EduAidController@delete')->name('delete_edu_aid');
+Route::post('/admin/edu_aids/create', 'EduAidController@create')->name('create_edu_aids');
+Route::post('/admin/edu_aids/sort', 'EduAidController@sort')->name('sort_edu_aids');
+Route::post('/admin/edu_aids/search', 'EduAidController@search')->name('search_edu_aids');

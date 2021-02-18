@@ -67,7 +67,7 @@
           <th scope="col">Название</th>
           <th scope="col">Город</th>
           <th scope="col">Дата добавления</th>
-          <th scope="col">Дата создания</th>
+          <th scope="col">Дата обновления</th>
           <th scope="col"></th>
           <th scope="col"></th>
         </tr>

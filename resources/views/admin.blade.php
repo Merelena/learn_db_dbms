@@ -48,8 +48,8 @@
       </tbody>
     </table>
     <table class="table">    
-      <h4 align="top" style="display: inline; margin-right: 2rem;">Учебные пособия</h4>
-      <input type="submit" value="Перейти" style="margin-right: 2rem;">
+      <h4 align="top" style="display: inline; margin-right: 2rem;">Учебные матриалы</h4>
+      <a href="{{ route('edu_aids') }}"><input type="submit" value="Перейти" style="margin-right: 2rem;"></a>
       <thead>
         <tr>
           <th scope="col">ID</th>
