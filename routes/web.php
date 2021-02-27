@@ -38,3 +38,10 @@ Route::post('/admin/edu_aids/{id}/delete', 'EduAidController@delete')->name('del
 Route::post('/admin/edu_aids/create', 'EduAidController@create')->name('create_edu_aids');
 Route::post('/admin/edu_aids/sort', 'EduAidController@sort')->name('sort_edu_aids');
 Route::post('/admin/edu_aids/search', 'EduAidController@search')->name('search_edu_aids');
+
+Route::post('/api/v5/new_user', 'api\ApiUserController@create');
+
+#test!!!
+Route::get('/test', function (){
+    return view('test');
+});
