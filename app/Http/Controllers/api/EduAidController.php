@@ -17,15 +17,17 @@ class EduAidController extends Controller
     public function delete($id)
     {
         $edu_aid = edu_aid::find($id);
+        
         if (isset($edu_aid->document)) Storage::delete(str_replace('storage/', 'public/', $edu_aid['document']));
         if (isset($edu_aid->title_image)) Storage::delete(str_replace('storage/', 'public/', $edu_aid['title_image']));
-        if ($edu_aid->delete())
+        if ($edu_aid)
         {
-            return response()->json(['message' => 'Edu aid successfully deleted']);
+            $edu_aid->delete();
+            return response()->json(['message' => 'Материал удален']);
         }
         else
         {
-            return response()->json(['error' => 'Edu aid can\'t be deleted'], 403);
+            return response()->json(['error' => 'Материала не существует'], 403);
         }        
     }
 

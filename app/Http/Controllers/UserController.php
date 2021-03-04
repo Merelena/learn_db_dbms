@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\user;
 use App\Models\edu_institution;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
@@ -22,7 +23,11 @@ class UserController extends Controller
     public function delete($id)
     {
         $user = user::find($id);
+        # exception exists only for test users without db
+        try{
         DB::statement('drop database `'.$user->email.'`;');
+        }
+        catch (Exception) {}
         $user->delete();
         return redirect()->route(
             'users',
@@ -61,7 +66,7 @@ class UserController extends Controller
         }
         if ($flag) {
             $user->save();
-            DB::statement('create database `'.$user->email.'`;');
+            DB::statement('CREATE DATABASE `'.$user->email.'`;');
             return redirect()->route(
                 'users',
                 [

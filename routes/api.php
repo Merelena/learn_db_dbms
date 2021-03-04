@@ -30,9 +30,22 @@ Route::group([
 });
 Route::group([
     'middleware' => 'api',
-    'prefix' => 'aids'
+    'prefix' => 'edu_aids'
 ], function ($router) {
     Route::get('all', 'api\EduAidController@all');
     Route::get('create', 'api\EduAidController@create');
+    Route::get('delete/{id}', 'api\EduAidController@delete');
+    Route::get('update/{id}', 'api\EduAidController@update');
+    Route::get('sort', 'api\EduAidController@sort');
+    Route::get('search', 'api\EduAidController@search');
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'database'
+], function ($router) {
+    Route::get('tables', 'api\DBController@tables');
+    Route::get('columns', 'api\DBController@columns');
+    Route::get('query', 'api\DBController@query');
 });
 
