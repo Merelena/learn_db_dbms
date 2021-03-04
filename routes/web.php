@@ -40,6 +40,7 @@ Route::post('/admin/edu_aids/sort', 'EduAidController@sort')->name('sort_edu_aid
 Route::post('/admin/edu_aids/search', 'EduAidController@search')->name('search_edu_aids');
 
 
+
 #test!!!
 Route::get('/test', function (){
     return view('test');

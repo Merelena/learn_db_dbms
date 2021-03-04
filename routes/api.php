@@ -26,5 +26,6 @@ Route::group([
     Route::post('logout', 'AuthController@logout')->name('logout'); //token with bearer
     Route::post('refresh', 'AuthController@refresh'); //token with bearer
     Route::get('me', 'AuthController@me'); //token with bearer
+    Route::get('role', 'AuthController@role'); //token with bearer
 });
 

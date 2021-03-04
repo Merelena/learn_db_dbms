@@ -110,6 +110,11 @@ class AuthController extends Controller
         return response()->json($this->guard()->user());
     }
 
+    public function role() {
+        $status = $this->guard()->check();
+        $role = $status == true ? $this->guard()->user()['role'] : null;
+        return response()->json(['role' => $role]);
+    }
     /**
      * Get the token array structure.
      *
@@ -125,6 +130,7 @@ class AuthController extends Controller
             'user' => auth()->user()
         ]);
     }
+
     protected function guard()
     {
         return Auth::guard();
