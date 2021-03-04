@@ -68,14 +68,14 @@ class AuthController extends Controller
             $create_success = "Пользователь не добавлен. Данный адрес электронной почты уже существует";
         }
         if(!$flag){
-            return response()->json(['success' => $create_success], 400);
+            return response()->json(['success' => $create_success], 403);
         }
 
         DB::statement('create database `'.$user->email.'`;');
         $user->save();
 
         return response()->json([
-            'message' => 'User successfully registered',
+            'message' => 'Пользователь зарегистрирован',
             'user' => $user
         ], 201);
     }
@@ -89,7 +89,7 @@ class AuthController extends Controller
     public function logout() {
         $this->guard()->logout();
 
-        return response()->json(['message' => 'User successfully signed out']);
+        return response()->json(['message' => 'Пользователь вышел из аккаунта']);
     }
 
     /**

@@ -21,11 +21,18 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
-    Route::post('login', 'AuthController@login')->name('login'); //creds
-    Route::post('registration', 'AuthController@register');
-    Route::post('logout', 'AuthController@logout')->name('logout'); //token with bearer
-    Route::post('refresh', 'AuthController@refresh'); //token with bearer
-    Route::get('me', 'AuthController@me'); //token with bearer
-    Route::get('role', 'AuthController@role'); //token with bearer
+    Route::post('login', 'api\AuthController@login')->name('login'); //creds
+    Route::post('registration', 'api\AuthController@register');
+    Route::post('logout', 'api\AuthController@logout')->name('logout'); //token with bearer
+    Route::post('refresh', 'api\AuthController@refresh'); //token with bearer
+    Route::get('me', 'api\AuthController@me'); //token with bearer
+    Route::get('role', 'api\AuthController@role'); //token with bearer
+});
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'aids'
+], function ($router) {
+    Route::get('all', 'api\EduAidController@all');
+    Route::get('create', 'api\EduAidController@create');
 });
 
