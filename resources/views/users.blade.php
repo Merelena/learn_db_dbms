@@ -64,7 +64,7 @@
           <option name="lecturer">Преподаватель</option>
           <option name="admin">Администратор</option>
         </select>
-        <input type="text" name="email" placeholder="E-mail" style="margin-bottom: 1rem;">
+        <input type="email" name="email" placeholder="E-mail" style="margin-bottom: 1rem;">
         <input type="text" name="password_1" placeholder="Пароль" style="margin-bottom: 1rem;">
         <input type="text" name="password_2" placeholder="Подтвердите пароль" style="margin-bottom: 1rem;">
         <input type="submit" value="Добавить">

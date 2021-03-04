@@ -14,7 +14,7 @@
         $data = reset($data);
       }
      ?> 
-  <form action="{{ route('update_edu_aid_submit', $data['id']) }}" method="post" style="display: flex; flex-direction: column; width:30%; margin: 0 auto;">
+  <form action="{{ route('update_edu_aid_submit', $data['id']) }}" enctype="multipart/form-data" method="post" style="display: flex; flex-direction: column; width:30%; margin: 0 auto;">
      @csrf
     <h4 align='center'>Редактировать материал</h4>
     <input type="text" name="id" value="{{ $data['id'] }}" style="margin-bottom: 1rem;" disabled>
@@ -27,7 +27,7 @@
     <p>Документ:</p>
     <input type="file" name="document">
     <p>Изображение:</p>
-    <input type="file" name="image" multiple accept="image/*,image/jpeg">
+    <input type="file" name="title_image" multiple accept="image/*,image/jpeg">
     <input type="submit" value="Изменить">
     </form> 
     <?php

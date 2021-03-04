@@ -44,4 +44,48 @@ class ApiUserController extends Controller
             return ['success' => $success];
         }
     }
+
+    function login(Request $req)
+    {
+        $users = new User();
+        $user = user::where('email', '=', $req->input('email'))->first();
+        if (isset($user))
+        {
+            $email = $user->email;
+            $password = $user->password;
+        }       
+        if (isset($email) and $password == $req->input('password'))
+        {
+            $_SESSION['user_id'] = $user->id;
+            $url = str_replace($_SERVER['HTTP_ORIGIN'], '', $_SERVER['HTTP_REFERER']);
+            header("Location: $url");
+            http_response_code(200);
+            return true;
+        }
+        http_response_code(400);
+        return false;
+    }
+
+    function logout(Request $req)
+    {
+        session_unset();
+    }
+
+    function check_login()
+    {
+        dd(isset($_SESSION));
+        return isset($_SESSION['user_id']);
+    }
+
+    function generateFormHash($salt)
+    {
+        $hash = md5(mt_rand(1,1000000) . $salt);
+        $_SESSION['csrf_hash'] = $hash;
+        return $hash;
+    }
+
+    function isValidFormHash($hash)
+    {
+        return $_SESSION['csrf_hash'] === $hash;
+    }
 }

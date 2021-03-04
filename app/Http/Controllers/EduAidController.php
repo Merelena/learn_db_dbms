@@ -20,9 +20,10 @@ class EduAidController extends Controller
     }
     public function delete($id)
     {
-        $edu_aid = edu_aid::find($id)->delete();
-        if ($edu_aid->document) Storage::delete($edu_aid['document']);
-        if ($edu_aid->title_image) Storage::delete($edu_aid['title_image']);
+        $edu_aid = edu_aid::find($id);
+        if (isset($edu_aid->document)) Storage::delete(str_replace('storage/', 'public/', $edu_aid['document']));
+        if (isset($edu_aid->title_image)) Storage::delete(str_replace('storage/', 'public/', $edu_aid['title_image']));
+        $edu_aid->delete();
         return redirect()->route(
             'edu_aids',
             [
@@ -49,8 +50,8 @@ class EduAidController extends Controller
             $create_success = "Материал не добавлен. Учреждения образования не существует";
         }
         if ($flag) {            
-            $edu_aid->document = $req->file('document')->store('documents');        
-            $edu_aid->title_image = $req->file('title_image')->store('title_images');
+            $edu_aid->document = str_replace('public/', 'storage/', $req->file('document')->store('public/documents'));        
+            $edu_aid->title_image = str_replace('public/', 'storage/', $req->file('title_image')->store('public/title_images'));
             $edu_aid->save();
             return redirect()->route(
                 'edu_aids',
@@ -80,8 +81,16 @@ class EduAidController extends Controller
         $req->input('description') ? $edu_aid->description = $req->input('description') : $edu_aid->description = '';
         $req->input('number_of_pages') ? $edu_aid->number_of_pages  = $req->input('number_of_pages') : $edu_aid->number_of_pages = null;
         if ($flag) {
-            if ($req->file('document')) $edu_aid->document = $req->file('document')->storeAs('documents', $req->$edu_aid->document);
-            if ($req->file('title_image')) $edu_aid->document = $req->file('title_image')->storeAs('title_images', $req->$edu_aid->title_image);
+            if ($req->file('document')) 
+            {
+                Storage::delete(str_replace('storage/', 'public/', $edu_aid['document']));
+                $edu_aid->document = str_replace('public/', 'storage/', $req->file('document')->store('public/documents'));
+            }
+            if ($req->file('title_image')) 
+            {                
+                Storage::delete(str_replace('storage/', 'public/', $edu_aid['title_image']));
+                $edu_aid->title_image = str_replace('public/', 'storage/', $req->file('title_image')->store('public/title_images'));
+            }
             $edu_aid->save();
             #return redirect()->route('update_user', $id)->with('success', "Пользоватль обновлен");
             return view(
