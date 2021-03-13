@@ -9,18 +9,19 @@ use Illuminate\Http\Request;
 
 class DBController extends Controller
 {
+
     public function tables(Request $req)
     {
         DB::statement('USE `'.$req->email.'`;');
-        $query = DB::select('SHOW TABLES');
-        return response()->json($query);
+        $result = DB::select('SHOW TABLES');
+        return response()->json($result);
     }
 
     public function columns(Request $req)
     {
         DB::statement('USE `'.$req->email.'`;');
-        $query = DB::select('SHOW COLUMNS FROM '.$req->table);
-        return response()->json($query);
+        $result = DB::select('SHOW COLUMNS FROM'.$req->table);
+        return response()->json($result);
     }
 
     public function query(Request $req)
@@ -31,11 +32,11 @@ class DBController extends Controller
         try
         {
             $result = DB::select($query);
-            return response()->json($result == [] ? 'OK' : $result);
+            return response()->json(['message' => $result == [] ? 'OK' : $result]);
         }
         catch (Exception $ex)
         {
-            return response($ex->getMessage());
+            return response()->json(['error' => $ex->getMessage()]);
         }
     }
     
@@ -43,6 +44,6 @@ class DBController extends Controller
     {
         $regexp = preg_replace("/.+`(.+)`\..+/", '$1', $query);
         if ($regexp != $email and $regexp != $query) return true;
-        return preg_match('/\s(database|grant|revoke|deny|user)\s/ui', $query);
+        return preg_match('/\s(database|databases|grant|revoke|deny|user|use)\s/ui', $query);
     }
 }

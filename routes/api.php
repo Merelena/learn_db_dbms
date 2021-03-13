@@ -22,7 +22,6 @@ Route::group([
     'prefix' => 'auth'
 ], function ($router) {
     Route::post('login', 'api\AuthController@login')->name('login'); //creds
-    Route::post('registration', 'api\AuthController@register');
     Route::post('logout', 'api\AuthController@logout')->name('logout'); //token with bearer
     Route::post('refresh', 'api\AuthController@refresh'); //token with bearer
     Route::get('me', 'api\AuthController@me'); //token with bearer

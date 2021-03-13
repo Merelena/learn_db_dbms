@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 use App\Models\user;
 use App\Models\edu_institution;
 use Illuminate\Http\Request;
@@ -42,7 +42,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $req) {
+    /*public function register(Request $req) {
         $user = new user;
         $edu_institutions = new edu_institution;
         $flag = true;
@@ -78,7 +78,7 @@ class AuthController extends Controller
             'message' => 'Пользователь зарегистрирован',
             'user' => $user
         ], 201);
-    }
+    }*/
 
 
     /**

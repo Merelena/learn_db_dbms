@@ -39,9 +39,5 @@ Route::post('/admin/edu_aids/create', 'EduAidController@create')->name('create_e
 Route::post('/admin/edu_aids/sort', 'EduAidController@sort')->name('sort_edu_aids');
 Route::post('/admin/edu_aids/search', 'EduAidController@search')->name('search_edu_aids');
 
+Route::get('/admin/check', 'AdminController@check');
 
-
-#test!!!
-Route::get('/test', function (){
-    return view('test');
-});

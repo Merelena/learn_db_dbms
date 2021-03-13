@@ -6,11 +6,13 @@ use App\Models\edu_aid;
 use App\Models\edu_institution;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class EduAidController extends Controller
 {
     public function update($id)
     {
+        if (!$this->isAdmin()) return abort(403);
         return view(
             'update_edu_aid',
             [
@@ -20,6 +22,7 @@ class EduAidController extends Controller
     }
     public function delete($id)
     {
+        if (!$this->isAdmin()) return abort(403);
         $edu_aid = edu_aid::find($id);
         if (isset($edu_aid->document)) Storage::delete(str_replace('storage/', 'public/', $edu_aid['document']));
         if (isset($edu_aid->title_image)) Storage::delete(str_replace('storage/', 'public/', $edu_aid['title_image']));
@@ -35,6 +38,7 @@ class EduAidController extends Controller
 
     public function create(Request $req)
     {
+        if (!$this->isAdmin()) return abort(403);
         $edu_aid = new edu_aid;
         $edu_institutions = new edu_institution;
         $flag = true;
@@ -81,6 +85,7 @@ class EduAidController extends Controller
 
     public function submit($id, Request $req)
     {
+        if (!$this->isAdmin()) return abort(403);
         $edu_aid = edu_aid::find($id);
         $edu_institutions = new edu_institution;
         $edu_aid->id = $id;        
@@ -131,6 +136,7 @@ class EduAidController extends Controller
 
     public function sort(Request $req)
     {
+        if (!$this->isAdmin()) return abort(403);
         return view(
             'edu_aids',
             [
@@ -143,6 +149,7 @@ class EduAidController extends Controller
 
     public function search(Request $req)
     {
+        if (!$this->isAdmin()) return abort(403);
         return view(
             'edu_aids',
             [
@@ -151,5 +158,10 @@ class EduAidController extends Controller
                 'edu_aids' => edu_aid::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->paginate(20)
             ]
             );
+    }
+
+    protected function isAdmin()
+    {
+        return isset(auth::user()->role) ? auth::user()->role == 'Администратор' : false;
     }
 }

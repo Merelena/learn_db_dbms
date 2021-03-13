@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\edu_institution;
+use Illuminate\Support\Facades\Auth;
 
 class EduInstitutionController extends Controller
 {
     public function update($name)
     {
+        if (!$this->isAdmin()) return abort(403);
         return view(
             'update_edu_institution',
             [
@@ -18,6 +20,7 @@ class EduInstitutionController extends Controller
     }
     public function delete($name)
     {
+        if (!$this->isAdmin()) return abort(403);
         $edu_institution = edu_institution::find($name)->delete();
         return redirect()->route(
             'edu_institutions',
@@ -30,6 +33,7 @@ class EduInstitutionController extends Controller
 
     public function create(Request $req)
     {
+        if (!$this->isAdmin()) return abort(403);
         $edu_institutions = new edu_institution;
         $flag = true;
         $req->input('name') ? $edu_institutions->name = $req->input('name') : $flag = false;
@@ -94,6 +98,7 @@ class EduInstitutionController extends Controller
 
     public function sort(Request $req)
     {
+        if (!$this->isAdmin()) return abort(403);
         return view(
             'edu_institutions',
             [
@@ -106,6 +111,7 @@ class EduInstitutionController extends Controller
 
     public function search(Request $req)
     {
+        if (!$this->isAdmin()) return abort(403);
         return view(
             'edu_institutions',
             [
@@ -114,5 +120,10 @@ class EduInstitutionController extends Controller
                 'edu_institutions' => edu_institution::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->paginate(20)
             ]
         );
+    }
+
+    protected function isAdmin()
+    {
+        return isset(auth::user()->role) ? auth::user()->role == 'Администратор' : false;
     }
 }

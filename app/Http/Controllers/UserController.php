@@ -6,6 +6,7 @@ use App\Models\user;
 use App\Models\edu_institution;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
@@ -13,6 +14,7 @@ class UserController extends Controller
 {
     public function update($id)
     {
+        if (!$this->isAdmin()) return abort(403);
         return view(
             'update_user',
             [
@@ -22,6 +24,7 @@ class UserController extends Controller
     }
     public function delete($id)
     {
+        if (!$this->isAdmin()) return abort(403);
         $user = user::find($id);
         # exception exists only for test users without db
         try{
@@ -40,6 +43,7 @@ class UserController extends Controller
 
     public function create(Request $req)
     {
+        if (!$this->isAdmin()) return abort(403);
         $user = new user;
         $edu_institutions = new edu_institution;
         $flag = true;
@@ -85,6 +89,7 @@ class UserController extends Controller
 
     public function submit($id, Request $req)
     {
+        if (!$this->isAdmin()) return abort(403);
         $user = user::find($id);
         $user->id = $id;
         $flag = true;
@@ -120,6 +125,7 @@ class UserController extends Controller
 
     public function sort(Request $req)
     {
+        if (!$this->isAdmin()) return abort(403);
         return view(
             'users',
             [
@@ -132,6 +138,7 @@ class UserController extends Controller
 
     public function search(Request $req)
     {
+        if (!$this->isAdmin()) return abort(403);
         return view(
             'users',
             [
@@ -140,5 +147,11 @@ class UserController extends Controller
                 'users' => user::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->paginate(20)
             ]
             );
+    }
+
+    protected function isAdmin()
+    {
+       
+        return isset(auth::user()->role) ? auth::user()->role == 'Администратор' : false;
     }
 }
