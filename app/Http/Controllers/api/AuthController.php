@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\api;
-use App\Models\user;
+use App\Models\User;
 use App\Models\edu_institution;
 use Illuminate\Http\Request;
 use Validator;

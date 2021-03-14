@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\user;
+use App\Models\User;
 use App\Models\edu_institution;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -18,14 +18,14 @@ class UserController extends Controller
         return view(
             'update_user',
             [
-                'data' => user::all()->where('id', $id)
+                'data' => User::all()->where('id', $id)
             ]
         );
     }
     public function delete($id)
     {
         if (!$this->isAdmin()) return abort(403);
-        $user = user::find($id);
+        $user = User::find($id);
         # exception exists only for test users without db
         try{
         DB::statement('drop database `'.$user->email.'`;');
@@ -35,7 +35,7 @@ class UserController extends Controller
         return redirect()->route(
             'users',
             [
-                'users' => user::all(),
+                'users' => User::all(),
                 'delete_success' => "Пользователь ID {$id} удален"
             ]
         );
@@ -44,7 +44,7 @@ class UserController extends Controller
     public function create(Request $req)
     {
         if (!$this->isAdmin()) return abort(403);
-        $user = new user;
+        $user = new User;
         $edu_institutions = new edu_institution;
         $flag = true;
         $req->input('surname') ? $user->surname = $req->input('surname') : $flag = false;
@@ -90,7 +90,7 @@ class UserController extends Controller
     public function submit($id, Request $req)
     {
         if (!$this->isAdmin()) return abort(403);
-        $user = user::find($id);
+        $user = User::find($id);
         $user->id = $id;
         $flag = true;
         $req->input('surname') ? $user->surname = $req->input('surname') : $flag = false;
@@ -131,7 +131,7 @@ class UserController extends Controller
             [
                 'field' => $req->input('field'),
                 'order' => $req->input('order'),
-                'users' => user::orderBy($req->input('field'), $req->input('order'))->paginate(20)
+                'users' => User::orderBy($req->input('field'), $req->input('order'))->paginate(20)
             ]
             );
     }
@@ -144,7 +144,7 @@ class UserController extends Controller
             [
                 'field' => $req->input('field'),
                 'search_term' => $req->input('search_term'),
-                'users' => user::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->paginate(20)
+                'users' => User::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->paginate(20)
             ]
             );
     }

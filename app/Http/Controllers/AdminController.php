@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\edu_institution;
-use App\Models\user;
+use App\Models\User;
 use App\Models\edu_aid;
 
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +19,7 @@ class AdminController extends Controller
             'admin',
             [
                 'edu_institutions' => edu_institution::take(10)->get(),
-                'users' => user::take(10)->get(),                
+                'users' => User::take(10)->get(),                
                 'edu_aids' => edu_aid::take(10)->get()
             ]
         );
@@ -28,7 +28,7 @@ class AdminController extends Controller
     public function users($field='updated_at', $order='ASC')
     {
         if (!$this->isAdmin()) return abort(403);
-        $users = user::orderBy($field, $order)->simplePaginate(20);
+        $users = User::orderBy($field, $order)->simplePaginate(20);
         return view('users')->with('users', $users);
     } 
 
