@@ -4,25 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\edu_aid;
 use App\Models\edu_institution;
+use App\Models\token;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 class EduAidController extends Controller
 {
-    public function update($id)
+    public function update($id, Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
         return view(
             'update_edu_aid',
             [
-                'data' => edu_aid::all()->where('id', $id)
+                'data' => edu_aid::all()->where('id', $id),
+                'token' => $req->token
             ]
         );
     }
-    public function delete($id)
+    public function delete($id, Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
         $edu_aid = edu_aid::find($id);
         if (isset($edu_aid->document)) Storage::delete(str_replace('storage/', 'public/', $edu_aid['document']));
         if (isset($edu_aid->title_image)) Storage::delete(str_replace('storage/', 'public/', $edu_aid['title_image']));
@@ -31,6 +35,7 @@ class EduAidController extends Controller
             'edu_aids',
             [
                 'edu_aids' => edu_aid::all(),
+                'token' => $req->token,
                 'delete_success' => "Материал ID {$id} удален"
             ]
         );
@@ -38,7 +43,8 @@ class EduAidController extends Controller
 
     public function create(Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
         $edu_aid = new edu_aid;
         $edu_institutions = new edu_institution;
         $flag = true;
@@ -70,6 +76,7 @@ class EduAidController extends Controller
             return redirect()->route(
                 'edu_aids',
                 [
+                    'token' => $req->token,
                     'create_success' => 'Материал добавлен'
                 ]
             );
@@ -77,6 +84,7 @@ class EduAidController extends Controller
             return redirect()->route(
                 'edu_aids',
                 [
+                    'token' => $req->token,
                     'create_success' => $create_success
                 ]
             );
@@ -85,7 +93,8 @@ class EduAidController extends Controller
 
     public function submit($id, Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
         $edu_aid = edu_aid::find($id);
         $edu_institutions = new edu_institution;
         $edu_aid->id = $id;        
@@ -119,6 +128,7 @@ class EduAidController extends Controller
                 [
                     'id' => $id,
                     'data' => $edu_aid,
+                    'token' => $req->token,
                     'success' => 'Материал обновлен'
                 ]
             );
@@ -128,6 +138,7 @@ class EduAidController extends Controller
                 [
                     'id' => $id,
                     'data' => $edu_aid,
+                    'token' => $req->token,
                     'success' => $update_success
                 ]
             );
@@ -136,32 +147,33 @@ class EduAidController extends Controller
 
     public function sort(Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
+        $edu_aids = edu_aid::orderBy($req->input('field'), $req->input('order'))->simplePaginate(20)->appends(request()->except('page'));
+        $edu_aids->token = $req->token;
         return view(
             'edu_aids',
             [
                 'field' => $req->input('field'),
                 'order' => $req->input('order'),
-                'edu_aids' => edu_aid::orderBy($req->input('field'), $req->input('order'))->paginate(20)
+                'edu_aids' => $edu_aids
             ]
             );
     }
 
     public function search(Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403);
+        $edu_aids =  edu_aid::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->simplePaginate(20)->appends(request()->except('page'));
+        $edu_aids->token = $req->token;
         return view(
             'edu_aids',
             [
                 'field' => $req->input('field'),
                 'search_term' => $req->input('search_term'),
-                'edu_aids' => edu_aid::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->paginate(20)
+                'edu_aids' => $edu_aids
             ]
             );
-    }
-
-    protected function isAdmin()
-    {
-        return isset(auth::user()->role) ? auth::user()->role == 'Администратор' : false;
     }
 }

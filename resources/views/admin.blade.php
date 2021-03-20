@@ -9,7 +9,7 @@
   <main>
     <table class="table">
         <h4 align="top" style="display: inline; margin-right: 2rem;">Учебные заведения</h4>
-        <a href="{{ route('edu_institutions') }}"><input type="submit" value="Перейти" style="margin-right: 2rem;"></a>
+        <a href="/admin/edu_institutions?token={{ $token }}"><input type="submit" value="Перейти" style="margin-right: 2rem;"></a>
       <thead>
         <tr>
           <th scope="col">Название</th>
@@ -27,7 +27,7 @@
     </table>
     <table class="table">
       <h4 align="top" style="display: inline; margin-right: 2rem;">Пользователи</h4>
-      <a href="{{ route('users') }}"><input type="submit" value="Перейти" style="margin-right: 2rem;"></a>
+      <a href="/admin/users?token={{ $token }}"><input type="submit" value="Перейти" style="margin-right: 2rem;"></a>
       <thead>
         <tr>
           <th scope="col">ID</th>
@@ -49,7 +49,7 @@
     </table>
     <table class="table">    
       <h4 align="top" style="display: inline; margin-right: 2rem;">Учебные матриалы</h4>
-      <a href="{{ route('edu_aids') }}"><input type="submit" value="Перейти" style="margin-right: 2rem;"></a>
+      <a href="/admin/edu_aids?token={{ $token }}"><input type="submit" value="Перейти" style="margin-right: 2rem;"></a>
       <thead>
         <tr>
           <th scope="col">ID</th>

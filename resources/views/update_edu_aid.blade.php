@@ -14,7 +14,7 @@
         $data = reset($data);
       }
      ?> 
-  <form action="{{ route('update_edu_aid_submit', $data['id']) }}" enctype="multipart/form-data" method="post" style="display: flex; flex-direction: column; width:30%; margin: 0 auto;">
+  <form action="/admin/edu_aids/{{ $data['id'] }}/update?token={{ $token }}" enctype="multipart/form-data" method="post" style="display: flex; flex-direction: column; width:30%; margin: 0 auto;">
      @csrf
     <h4 align='center'>Редактировать материал</h4>
     <input type="text" name="id" value="{{ $data['id'] }}" style="margin-bottom: 1rem;" disabled>
@@ -40,7 +40,7 @@
         echo "<script>alert(\"".$success."\"); </script>";
       }
     ?>
-    <button><a href="{{ route('edu_aids') }}" style="text-decoration: none;">Назад</a></button>
+    <button><a href="/admin/edu_aids?token={{ $token }}" style="text-decoration: none;">Назад</a></button>
   </main>
 </body>
 

@@ -4,28 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\edu_institution;
+use App\Models\token;
 use Illuminate\Support\Facades\Auth;
 
 class EduInstitutionController extends Controller
 {
-    public function update($name)
+    public function update($name, Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
         return view(
             'update_edu_institution',
             [
-                'edu_institutions' => edu_institution::find($name)
+                'data' => edu_institution::find($name),
+                'token' => $req->token
             ]
         );
     }
-    public function delete($name)
+    public function delete($name, Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
         $edu_institution = edu_institution::find($name)->delete();
         return redirect()->route(
             'edu_institutions',
             [
                 'edu_institutions' => edu_institution::all(),
+                'token' => $req->token,
                 'delete_success' => "Учреждение образования под названием \"{$name}\" удалено"
             ]
         );
@@ -33,7 +38,8 @@ class EduInstitutionController extends Controller
 
     public function create(Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
         $edu_institutions = new edu_institution;
         $flag = true;
         $req->input('name') ? $edu_institutions->name = $req->input('name') : $flag = false;
@@ -48,6 +54,7 @@ class EduInstitutionController extends Controller
             return redirect()->route(
                 'edu_institutions',
                 [
+                    'token' => $req->token,
                     'create_success' => 'Учреждение образования добавлено'
                 ]
             );
@@ -55,6 +62,7 @@ class EduInstitutionController extends Controller
             return redirect()->route(
                 'edu_institutions',
                 [
+                    'token' => $req->token,
                     'create_success' => $create_success
                 ]
             );
@@ -63,6 +71,8 @@ class EduInstitutionController extends Controller
 
     public function submit($name, Request $req)
     {
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
         $edu_institutions = edu_institution::find($name);
         $old_name = $edu_institutions->name;
         $flag = true;
@@ -81,6 +91,7 @@ class EduInstitutionController extends Controller
                 [
                     'name' => $name,
                     'data' => $edu_institutions,
+                    'token' => $req->token,
                     'success' => 'Учреждение образования обновлено'
                 ]
             );
@@ -90,6 +101,7 @@ class EduInstitutionController extends Controller
                 [
                     'name' => $name,
                     'data' => $edu_institutions,
+                    'token' => $req->token,
                     'success' => $update_success
                 ]
             );
@@ -98,32 +110,33 @@ class EduInstitutionController extends Controller
 
     public function sort(Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
+        $edu_institutions = edu_institution::orderBy($req->input('field'), $req->input('order'))->simplePaginate(10)->appends(request()->except('page'));
+        $edu_institutions->token = $req->token;
         return view(
             'edu_institutions',
             [
                 'field' => $req->input('field'),
                 'order' => $req->input('order'),
-                'edu_institutions' => edu_institution::orderBy($req->input('field'), $req->input('order'))->paginate(20)
+                'edu_institutions' => $edu_institutions
             ]
         );
     }
 
     public function search(Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
+        $edu_institutions = edu_institution::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->simplePaginate(20)->appends(request()->except('page'));
+        $edu_institutions->token = $req->token;
         return view(
             'edu_institutions',
             [
                 'field' => $req->input('field'),
                 'search_term' => $req->input('search_term'),
-                'edu_institutions' => edu_institution::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->paginate(20)
+                'edu_institutions' => $edu_institutions
             ]
         );
-    }
-
-    protected function isAdmin()
-    {
-        return isset(auth::user()->role) ? auth::user()->role == 'Администратор' : false;
     }
 }

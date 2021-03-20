@@ -110,6 +110,6 @@ class EduAidController extends Controller
 
     public function search(Request $req)
     {
-        return response()->json(['edu_aids' => edu_aid::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")]);
+        return response()->json(['edu_aids' => edu_aid::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->get()]);
     }
 }

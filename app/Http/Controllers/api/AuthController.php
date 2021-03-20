@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 use App\Models\User;
 use App\Models\edu_institution;
+use App\Models\token;
 use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Support\Facades\Auth;
@@ -88,7 +89,9 @@ class AuthController extends Controller
      */
     public function logout() {
         $this->guard()->logout();
-
+        $token = $_SERVER['HTTP_AUTHORIZATION'];
+        $token_db = new token;
+        $token_db->find($token)->delete();
         return response()->json(['message' => 'Пользователь вышел из аккаунта']);
     }
 
@@ -123,6 +126,19 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     protected function createNewToken($token){
+        $token_db = new token;
+        $token_exists = token::find("Bearer $token");
+        if ($token_exists == [])
+        {
+            $token_db->token = "Bearer $token";
+            $token_db->expire = date("Y-m-d h:m:s", strtotime("+ 86400 seconds"));
+            $token_db->save();
+        }
+        else
+        {
+            if ($token_exists->expire < (string)now()) $token_exists->delete();
+        }
+        
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',

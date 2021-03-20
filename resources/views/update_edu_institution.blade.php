@@ -14,7 +14,7 @@
         $data = reset($data);
       }
      ?> 
-  <form action="{{ route('update_edu_institution_submit', $data['name']) }}" method="post" style="display: flex; flex-direction: column; width:30%; margin: 0 auto;">
+  <form action="/admin/edu_institutions/{{ $data['name'] }}/update?token={{ $token }}" method="post" style="display: flex; flex-direction: column; width:30%; margin: 0 auto;">
      @csrf
     <h4 align='center'>Редактировать учреждение образования</h4>
     <input type="text" name="name" value="{{ $data['name'] }}" style="margin-bottom: 1rem;">
@@ -31,7 +31,7 @@
         echo "<script>alert(\"".$success."\"); </script>";
       }
     ?>
-    <button><a href="{{ route('edu_institutions') }}" style="text-decoration: none;">Назад</a></button>
+    <button><a href="/admin/edu_institutions?token={{ $token }}" style="text-decoration: none;">Назад</a></button>
   </main>
 </body>
 

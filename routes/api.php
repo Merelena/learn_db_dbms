@@ -32,11 +32,11 @@ Route::group([
     'prefix' => 'edu_aids'
 ], function ($router) {
     Route::get('all', 'api\EduAidController@all');
-    Route::get('create', 'api\EduAidController@create');
-    Route::get('delete/{id}', 'api\EduAidController@delete');
-    Route::get('update/{id}', 'api\EduAidController@update');
-    Route::get('sort', 'api\EduAidController@sort');
-    Route::get('search', 'api\EduAidController@search');
+    Route::post('create', 'api\EduAidController@create');
+    Route::post('delete/{id}', 'api\EduAidController@delete');
+    Route::post('update/{id}', 'api\EduAidController@update');
+    # Route::post('sort', 'api\EduAidController@sort');
+    Route::post('search', 'api\EduAidController@search');
 });
 
 Route::group([

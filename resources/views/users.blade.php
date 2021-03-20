@@ -5,9 +5,9 @@
   <title>Пользователи</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
   <script>
-    function del(id) {
+    function del(id, token) {
       if (confirm("Вы действительно хотите удалить пользователя ID \"" + id + "\"?")) {
-          location.href="/admin/users/" + id +"/delete";   
+          location.href="/admin/users/" + id +"/delete?token=" + token;   
       }
     }
   </script>
@@ -16,7 +16,7 @@
 <body>
   <main style="display: flex; flex-direction: row;">
     <div class="form" style="display: flex; flex-direction: column; width:25%;">
-      <form action="{{ route('sort_users') }}" method="post" style="display: flex; flex-direction: column;">
+      <form action="/admin/users/sort?token={{ $users->token }}" method="post" style="display: flex; flex-direction: column;">
         @csrf
         <select name="field">
           <option value="id">ID</option>
@@ -35,7 +35,7 @@
         </select>
         <input type='submit' value='Сортировать'>
       </form>
-      <form action="{{ route('search_users') }}" method="post" style="display: flex; flex-direction: column;">
+      <form action="/admin/users/search?token={{ $users->token }}" method="post" style="display: flex; flex-direction: column;">
         @csrf
         <input type="text" name="search_term" placeholder="Поисковое значение" style="margin-top: 1rem;">
         <select name="field">
@@ -46,13 +46,12 @@
           <option value="role">Роль</option>
           <option value="edu_institution">УО</option>
           <option value="email">E-mail</option>
-          <option value="password">Пароль</option>
           <option value="created_at">Дата добавления</option>
           <option value="updated_at">Дата обновления</option>
         </select>
         <input type='submit' value='Поиск'>
       </form>
-      <form action="{{ route('create_user') }}" method="post" style="display: flex; flex-direction: column;">
+      <form action="/admin/users/create?token={{ $users->token }}" method="post" style="display: flex; flex-direction: column;">
         @csrf
         <h4 style="margin-bottom: 1rem; margin-top: 1rem;">Добавить пользователя</h4>
         <input type="text" name="surname" placeholder="Фамилия" style="margin-bottom: 1rem;">
@@ -74,10 +73,9 @@
           echo "<script>alert(\"".$_GET['create_success']."\"); </script>";
         }
       ?>
-      <a href="{{ route('admin') }}"><button>Назад</button></a>
+      <a href="/admin?token={{ $users->token }}"><button>Назад</button></a>
     </div>
     <table class="table">        
-      <caption>{!! $users->render() !!}</caption>
       <thead>
         <?php
         if (isset($_GET['delete_success'])) {
@@ -92,7 +90,6 @@
           <th scope="col">Роль</th>
           <th scope="col">Учреждение образования</th>
           <th scope="col">E-mail</th>
-          <th scope="col">Пароль</th>
           <th scope="col">Дата добавления</th>
           <th scope="col">Дата обновления</th>
           <th scope="col"></th>
@@ -102,18 +99,17 @@
       <tbody>
         @foreach($users as $element)
         <tr>
-          <td>{{ $element->id}}</td>
-          <td>{{ $element->surname}}</td>
-          <td>{{ $element->first_name}}</td>
-          <td>{{ $element->middle_name}}</td>
-          <td>{{ $element->role}}</td>
-          <td>{{ $element->edu_institution}}</td>
-          <td>{{ $element->email}}</td>
-          <td>{{ $element->password}}</td>
-          <td>{{ $element->created_at}}</td>
-          <td>{{ $element->updated_at}}</td>
-          <td><a href="/admin/users/{{ $element->id }}/update">Редактировать</a></td>
-          <td><a href="javascript:del({{ $element->id }})">Удалить</a></td>
+          <td>{{ $element->id }}</td>
+          <td>{{ $element->surname }}</td>
+          <td>{{ $element->first_name }}</td>
+          <td>{{ $element->middle_name }}</td>
+          <td>{{ $element->role }}</td>
+          <td>{{ $element->edu_institution }}</td>
+          <td>{{ $element->email }}</td>
+          <td>{{ $element->created_at }}</td>
+          <td>{{ $element->updated_at }}</td>
+          <td><a href="/admin/users/{{ $element->id }}/update?token={{ $users->token }}">Редактировать</a></td>
+          <td><a href="javascript:del({{ $element->id }}, '{{ $users->token }}')">Удалить</a></td>
         </tr>
         @endforeach
       </tbody>              

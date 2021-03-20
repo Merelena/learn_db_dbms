@@ -13,8 +13,8 @@
         $data = reset($data);
         $data = reset($data);
       }
-     ?> 
-  <form action="{{ route('update_user_submit', $data['id']) }}" method="post" style="display: flex; flex-direction: column; width:30%; margin: 0 auto;">
+     ?>    
+  <form action="/admin/users/{{ $data['id'] }}/update?token={{ $token }}" method="post" style="display: flex; flex-direction: column; width:30%; margin: 0 auto;">
      @csrf
     <h4 align='center'>Редактировать пользователя</h4>
     <input type="text" name="id" value="{{ $data['id'] }}" style="margin-bottom: 1rem;" disabled>
@@ -28,7 +28,7 @@
       <option name="admin">Администратор</option>
     </select>
     <input type="text" name="email" value="{{ $data['email'] }}" style="margin-bottom: 1rem;">
-    <input type="text" name="password" value="{{ $data['password'] }}" style="margin-bottom: 1rem;">
+    <input type='text' name='password' style='margin-bottom: 1rem;'>
     <input type="submit" value="Изменить">
     </form> 
     <?php
@@ -41,7 +41,7 @@
         echo "<script>alert(\"".$success."\"); </script>";
       }
     ?>
-    <button><a href="{{ route('users') }}" style="text-decoration: none;">Назад</a></button>
+    <button><a href="/admin/users?token={{ $token }}" style="text-decoration: none;">Назад</a></button>
   </main>
 </body>
 

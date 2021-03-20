@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\edu_institution;
+use App\Models\token;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -12,19 +13,23 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function update($id)
+    public function update($id, Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
+        $data = User::all()->where('id', $id);
         return view(
             'update_user',
             [
-                'data' => User::all()->where('id', $id)
+                'data' => $data,
+                'token' => $req->token
             ]
         );
     }
-    public function delete($id)
+    public function delete($id, Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
         $user = User::find($id);
         # exception exists only for test users without db
         try{
@@ -32,18 +37,21 @@ class UserController extends Controller
         }
         catch (Exception) {}
         $user->delete();
+        $users = User::all();
         return redirect()->route(
             'users',
             [
-                'users' => User::all(),
-                'delete_success' => "Пользователь ID {$id} удален"
+                'delete_success' => "Пользователь ID {$id} удален",
+                'users' => $users,
+                'token' => $req->token
             ]
         );
     }
 
     public function create(Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
         $user = new User;
         $edu_institutions = new edu_institution;
         $flag = true;
@@ -55,7 +63,7 @@ class UserController extends Controller
         $req->input('email') ? $user->email = $req->input('email') : $flag = false;
         $create_success = "Пользователь не добавлен, только поле Отчество может быть пустым!";
         if ($req->input('password_1') == $req->input('password_2') && $req->input('password_1')) {
-            $user->password = $req->input('password_1');
+            $user->password = bcrypt($req->input('password_1'));
         } else {
             $flag = false;
             $create_success = "Пользователь не добавлен, пароли не совпадают либо пусты";
@@ -74,14 +82,16 @@ class UserController extends Controller
             return redirect()->route(
                 'users',
                 [
-                    'create_success' => 'Пользователь добавлен'
+                    'create_success' => 'Пользователь добавлен',
+                    'token' => $req->token
                 ]
             );
         } else {
             return redirect()->route(
                 'users',
                 [
-                    'create_success' => $create_success
+                    'create_success' => $create_success,
+                    'token' => $req->token
                 ]
             );
         }
@@ -89,7 +99,8 @@ class UserController extends Controller
 
     public function submit($id, Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
         $user = User::find($id);
         $user->id = $id;
         $flag = true;
@@ -99,7 +110,7 @@ class UserController extends Controller
         $req->input('role') ? $user->role = $req->input('role') : $flag = false;
         $req->input('edu_institution') ? $user->edu_institution = $req->input('edu_institution') : $flag = false;
         $req->input('email') ? $user->email = $req->input('email') : $flag = false;
-        $req->input('password') ? $user->password = $req->input('password') : $flag = false;
+        if ($req->input('password')) $user->password = bcrypt($req->input('password'));
         if ($flag) {
             $user->save();
             #return redirect()->route('update_user', $id)->with('success', "Пользоватль обновлен");
@@ -108,6 +119,7 @@ class UserController extends Controller
                 [
                     'id' => $id,
                     'data' => $user,
+                    'token' => $req->token,
                     'success' => 'Пользователь обновлен'
                 ]
             );
@@ -117,6 +129,7 @@ class UserController extends Controller
                 [
                     'id' => $id,
                     'data' => $user,
+                    'token' => $req->token,
                     'success' => 'Пользователь не обновлен, только поле Отчество может быть пустым!'
                 ]
             );
@@ -125,33 +138,33 @@ class UserController extends Controller
 
     public function sort(Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
+        $users = User::orderBy($req->input('field'), $req->input('order'))->simplePaginate(20)->appends(request()->except('page'));
+        $users->token = $req->token;
         return view(
             'users',
             [
                 'field' => $req->input('field'),
                 'order' => $req->input('order'),
-                'users' => User::orderBy($req->input('field'), $req->input('order'))->paginate(20)
+                'users' => $users
             ]
             );
     }
 
     public function search(Request $req)
     {
-        if (!$this->isAdmin()) return abort(403);
+        $token_exists = token::find($req->token);
+        if ($token_exists == [] or $token_exists->expire < (string)now() ) return abort(403); 
+        $users =  User::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->simplePaginate(20)->appends(request()->except('page'));
+        $users->token = $req->token;
         return view(
             'users',
             [
                 'field' => $req->input('field'),
                 'search_term' => $req->input('search_term'),
-                'users' => User::where($req->input('field'), 'LIKE', "%".$req->input('search_term')."%")->paginate(20)
+                'users' => $users
             ]
             );
-    }
-
-    protected function isAdmin()
-    {
-       
-        return isset(auth::user()->role) ? auth::user()->role == 'Администратор' : false;
     }
 }
