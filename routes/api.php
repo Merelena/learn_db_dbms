@@ -35,7 +35,6 @@ Route::group([
     Route::post('create', 'api\EduAidController@create');
     Route::post('delete/{id}', 'api\EduAidController@delete');
     Route::post('update/{id}', 'api\EduAidController@update');
-    # Route::post('sort', 'api\EduAidController@sort');
     Route::post('search', 'api\EduAidController@search');
 });
 

@@ -19,7 +19,7 @@ class AdminController extends Controller
         if (isset($token))
         {
            if (!$this->isAdmin()) return abort(403);
-        }
+        } 
         else
         {
            $token = $req->token;
